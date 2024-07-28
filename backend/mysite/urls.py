@@ -15,8 +15,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+
+"""
+includeを使うことで再利用性を高める。アプリごとに独立したURLパターンを
+持つことでモジュール性確保
+urlpatternsでDjangoプロジェクトのURLパターンを定義
+URLパターンに対応するview関数をマッピング
+"""
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # Djoserによる認証のためのURL
+    path("api/auth/", include("djoser.urls")),
+    #DjoserのJWT認証関連のURL
+    path("api/auth/", include("djoser.urls.jwt")),
+    # アカウント
+    path("api/", include("accounts.urls")),
+    # 管理画面
+    path("admin/", admin.site.urls),
 ]
