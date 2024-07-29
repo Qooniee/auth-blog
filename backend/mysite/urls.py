@@ -31,6 +31,8 @@ urlpatterns = [
     path("api/auth/", include("djoser.urls.jwt")),
     # アカウント
     path("api/", include("accounts.urls")),
+    # ブログ用アプリ
+    path("api/", include("app.urls")),
     # 管理画面
     path("admin/", admin.site.urls),
 ]
