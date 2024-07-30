@@ -27,6 +27,7 @@ import toast from "react-hot-toast"
 const schema = z.object({
   title: z.string().min(3, { message: "3文字以上入力する必要があります" }),
   content: z.string().min(3, { message: "3文字以上入力する必要があります" }),
+  author: z.string().min(1, {message: "著者名を入力してください"})
 })
 
 // 入力データの型を定義
@@ -76,6 +77,7 @@ const PostEdit = ({ user, post }: PostEditProps) => {
         accessToken: user.accessToken,
         postId: post.uid,
         title: data.title,
+        author: data.author,
         content: data.content,
         image: base64Image,
       })
@@ -163,7 +165,7 @@ const PostEdit = ({ user, post }: PostEditProps) => {
               <FormItem>
                 <FormLabel>タイトル</FormLabel>
                 <FormControl>
-                  <Input placeholder="投稿のタイトル" {...field} />
+                  <Input placeholder="本のタイトル" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -172,12 +174,27 @@ const PostEdit = ({ user, post }: PostEditProps) => {
 
           <FormField
             control={form.control}
+            name="author"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>著者</FormLabel>
+                <FormControl>
+                  <Input placeholder="本の著者" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+
+          <FormField
+            control={form.control}
             name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>内容</FormLabel>
+                <FormLabel>感想</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="投稿の内容" {...field} rows={15} />
+                  <Textarea placeholder="本の感想" {...field} rows={15} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

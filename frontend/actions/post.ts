@@ -86,6 +86,7 @@ export const getPostDetail = async ({ postId }: { postId: string }) => {
 interface CreatePostType {
   accessToken: string
   title: string
+  author: string
   content: string
   image: string | undefined
 }
@@ -94,11 +95,13 @@ interface CreatePostType {
 export const createPost = async ({
   accessToken,
   title,
+  author,
   content,
   image,
 }: CreatePostType) => {
   const body = JSON.stringify({
     title: title,
+    author: author,
     content: content,
     image: image,
   })
@@ -130,6 +133,7 @@ interface UpdatePostType {
   accessToken: string
   postId: string
   title: string
+  author: string
   content: string
   image: string | undefined
 }
@@ -139,11 +143,13 @@ export const updatePost = async ({
   accessToken,
   postId,
   title,
+  author,
   content,
   image,
 }: UpdatePostType) => {
   const body = JSON.stringify({
     title: title,
+    author: author,
     content: content,
     image: image,
   })

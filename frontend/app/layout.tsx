@@ -17,8 +17,8 @@ import ToastProvider from "@/components/providers/ToastProvider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "QoonieeBlog",
-  description: "QoonieeBlog",
+  title: "RingsLog",
+  description: "RingsLog",
 }
 
 interface RootLayoutProps {

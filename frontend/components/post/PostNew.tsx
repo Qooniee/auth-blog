@@ -27,6 +27,7 @@ import Image from "next/image"
 const schema = z.object({
   title: z.string().min(3, { message: "3文字以上入力する必要があります" }),
   content: z.string().min(3, { message: "3文字以上入力する必要があります" }),
+  author: z.string().min(1, "著者名を入力してください")
 })
 
 // 入力データの型を定義
@@ -67,6 +68,7 @@ const PostNew = ({ user }: PostNewProps) => {
       const res = await createPost({
         accessToken: user.accessToken,
         title: data.title,
+        author: data.author,
         content: data.content,
         image: base64Image,
       })
@@ -172,7 +174,20 @@ const PostNew = ({ user }: PostNewProps) => {
               <FormItem>
                 <FormLabel>タイトル</FormLabel>
                 <FormControl>
-                  <Input placeholder="投稿のタイトル" {...field} />
+                  <Input placeholder="本のタイトル" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="author"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>著者</FormLabel>
+                <FormControl>
+                  <Input placeholder="本の著者" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -184,9 +199,9 @@ const PostNew = ({ user }: PostNewProps) => {
             name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>内容</FormLabel>
+                <FormLabel>感想</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="投稿の内容" {...field} rows={15} />
+                  <Textarea placeholder="本の感想" {...field} rows={15} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
