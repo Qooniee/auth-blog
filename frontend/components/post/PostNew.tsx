@@ -22,12 +22,14 @@ import { UserType } from "@/lib/nextauth"
 import toast from "react-hot-toast"
 import ImageUploading, { ImageListType } from "react-images-uploading"
 import Image from "next/image"
+import { fetchBookInfo } from "@/lib/fetchBookInfo"
 
 // 入力データの検証ルールを定義
 const schema = z.object({
   title: z.string().min(3, { message: "3文字以上入力する必要があります" }),
   content: z.string().min(3, { message: "3文字以上入力する必要があります" }),
-  author: z.string().min(1, "著者名を入力してください")
+  author: z.string().min(1, "著者名を入力してください"),
+  isbn: z.string().min(10, { message: "ISBNを入力してください" })
 })
 
 // 入力データの型を定義
@@ -42,7 +44,8 @@ const PostNew = ({ user }: PostNewProps) => {
   const router = useRouter()
   const [imageUpload, setImageUpload] = useState<ImageListType>([])
   const [isLoading, setIsLoading] = useState(false)
-
+  const [bookData, setBookData] = useState<{ title: string, author: string, image: string } | null>(null)
+  
   // フォームの状態
   const form = useForm<InputType>({
     // 入力値の検証
@@ -51,6 +54,8 @@ const PostNew = ({ user }: PostNewProps) => {
     defaultValues: {
       title: "",
       content: "",
+      author: "",
+      isbn: "",
     },
   })
 
@@ -67,6 +72,7 @@ const PostNew = ({ user }: PostNewProps) => {
       // 新規投稿
       const res = await createPost({
         accessToken: user.accessToken,
+        isbn: data.isbn,
         title: data.title,
         author: data.author,
         content: data.content,
@@ -88,6 +94,25 @@ const PostNew = ({ user }: PostNewProps) => {
     }
   }
 
+  // ISBNで書籍情報を取得する
+  const handleError = (error: unknown) => {
+    if (error instanceof Error) {
+      return error.message
+    }
+    return "不明なエラーが発生しました"
+  }
+  
+  const onFetchBookData = async (isbn: string) => {
+    try {
+      const data = await fetchBookInfo(isbn)
+      setBookData(data)
+      form.setValue("title", data.title)
+      form.setValue("author", data.author)
+    } catch (error) {
+      toast.error(handleError(error))
+    }
+  }
+  
   // 画像アップロード
   const onChangeImage = (imageList: ImageListType) => {
     const file = imageList[0]?.file
@@ -169,6 +194,23 @@ const PostNew = ({ user }: PostNewProps) => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <FormField
             control={form.control}
+            name="isbn"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>ISBN</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="ISBNを入力"
+                    {...field}
+                    onBlur={() => field.value && onFetchBookData(field.value)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="title"
             render={({ field }) => (
               <FormItem>
@@ -193,8 +235,7 @@ const PostNew = ({ user }: PostNewProps) => {
               </FormItem>
             )}
           />
-
-          <FormField
+                    <FormField
             control={form.control}
             name="content"
             render={({ field }) => (

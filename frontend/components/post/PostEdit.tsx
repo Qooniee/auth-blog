@@ -23,11 +23,15 @@ import ImageUploading, { ImageListType } from "react-images-uploading"
 import Image from "next/image"
 import toast from "react-hot-toast"
 
+import { fetchBookInfo } from "@/lib/fetchBookInfo"
+
+
 // 入力データの検証ルールを定義
 const schema = z.object({
   title: z.string().min(3, { message: "3文字以上入力する必要があります" }),
   content: z.string().min(3, { message: "3文字以上入力する必要があります" }),
-  author: z.string().min(1, {message: "著者名を入力してください"})
+  author: z.string().min(1, {message: "著者名を入力してください"}),
+  isbn: z.string().min(10, { message: "ISBNを入力してください" })
 })
 
 // 入力データの型を定義
@@ -47,6 +51,7 @@ const PostEdit = ({ user, post }: PostEditProps) => {
     },
   ])
   const [isLoading, setIsLoading] = useState(false)
+  const [bookData, setBookData] = useState<{ title: string, author: string, image: string } | null>(null)
 
   // フォームの状態
   const form = useForm<InputType>({
@@ -76,6 +81,7 @@ const PostEdit = ({ user, post }: PostEditProps) => {
       const res = await updatePost({
         accessToken: user.accessToken,
         postId: post.uid,
+        isbn: data.isbn,
         title: data.title,
         author: data.author,
         content: data.content,
@@ -94,6 +100,25 @@ const PostEdit = ({ user, post }: PostEditProps) => {
       toast.error("投稿の編集に失敗しました")
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  // ISBNで書籍情報を取得する
+  const handleError = (error: unknown) => {
+    if (error instanceof Error) {
+      return error.message
+    }
+    return "不明なエラーが発生しました"
+  }
+  
+  const onFetchBookData = async (isbn: string) => {
+    try {
+      const data = await fetchBookInfo(isbn)
+      setBookData(data)
+      form.setValue("title", data.title)
+      form.setValue("author", data.author)
+    } catch (error) {
+      toast.error(handleError(error))
     }
   }
 
@@ -158,6 +183,27 @@ const PostEdit = ({ user, post }: PostEditProps) => {
         </div>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          
+        <FormField
+            control={form.control}
+            name="isbn"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>ISBN</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="ISBNを入力"
+                    {...field}
+                    onBlur={() => field.value && onFetchBookData(field.value)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          
+          
           <FormField
             control={form.control}
             name="title"
