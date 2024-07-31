@@ -14,8 +14,10 @@ class Post(models.Model):
     image = models.ImageField(
         upload_to="post", verbose_name="サムネイル", null=True, blank=True
     )
+    isbn = models.CharField("isbn", max_length=10, null=False, blank=False, default="None")
     title = models.CharField("タイトル", max_length=255)
-    content = models.TextField("内容")
+    author = models.CharField("著者", max_length=32,  null=False, blank=False, default="None")
+    content = models.TextField("感想")
     updated_at = models.DateTimeField("更新日", auto_now=True)
     created_at = models.DateTimeField("作成日", auto_now_add=True)
 

@@ -5,7 +5,7 @@ from app.models import Post
 # 投稿するモデルを管理画面で操作可能にする
 class PostCustom(ModelAdmin):
     # 一覧
-    list_display = ("uid", "user", "title", "updated_at", "created_at")
+    list_display = ("uid", "user", "isbn", "title", "author", "updated_at", "created_at")
     # リンク
     list_display_links = ("uid", "user", "title")
     # 順番
