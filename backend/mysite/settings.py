@@ -80,6 +80,25 @@ DATABASES = {
     "default": config("DATABASE_URL", default=default_dburl, cast=dburl),
 }
 
+LANGUAGE_CODE = "ja"
+
+TIME_ZONE = "Asia/Tokyo"
+
+USE_I18N = True
+
+USE_TZ = True
+
+STATIC_URL = "static/"
+STATIC_ROOT = str(BASE_DIR / "staticfiles")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+MEDIA_URL = "/media/"
+
+SUPERUSER_NAME = env("SUPERUSER_NAME")
+SUPERUSER_EMAIL = env("SUPERUSER_EMAIL")
+SUPERUSER_PASSWORD = env("SUPERUSER_PASSWORD")
+
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -96,19 +115,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-LANGUAGE_CODE = "ja"
-
-TIME_ZONE = "Asia/Tokyo"
-
-USE_I18N = True
-
-USE_TZ = True
-
-STATIC_URL = "static/"
-STATIC_ROOT = str(BASE_DIR / "staticfiles")
-
-MEDIA_URL = "/media/"
 
 # Cloudinaryを使用
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
