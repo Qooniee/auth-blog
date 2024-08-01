@@ -208,3 +208,23 @@ AUTH_USER_MODEL = "accounts.UserAccount"
 # サイト設定
 SITE_DOMAIN = env("SITE_DOMAIN")
 SITE_NAME = env("SITE_NAME")
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'django_debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
