@@ -1,6 +1,6 @@
 databases:
   - name: auth_blog_django_render_db
-    region: Oregon
+    region: singapore
     plan: free
     databaseName: auth_blog_django_render_db
     user: django_user
@@ -9,7 +9,7 @@ services:
   - type: web
     name: auth_blog_django_render
     env: python
-    region: Oregon
+    region: singapore
     buildCommand: './build.sh'
     startCommand: 'gunicorn mysite.wsgi:application'
     plan: free
